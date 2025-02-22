@@ -91,7 +91,7 @@ def game():
             double_digits = str(score_list_index)
             screen.blit(nums[int(double_digits[0])],(20,20)) ; screen.blit(nums[int(double_digits[1])],(44,20))
         elif score_list_index > 99:
-            double_digits = str(score_list_index).split()
+            double_digits = str(score_list_index)
             screen.blit(nums[int(double_digits[0])]),(20,20) ; screen.blit(nums[int(double_digits[1])],(44,20))
             screen.blit(nums[int(double_digits[2])],(68,20))
 
