@@ -3,14 +3,10 @@ pygame.init()
 from pygame import *
 from pygame.mixer import music
 
-fps = 90 ; clock = pygame.time.Clock()
+fps = 95 ; clock = pygame.time.Clock()
 screen = display.set_mode((500,480),pygame.NOFRAME)
 display.set_caption("FLAPPY BIRD")
 display.set_icon(pygame.image.load(r"assets/ico.png"))
-
-cursor = pygame.transform.scale(pygame.image.load(r"assets/cursor.png"),(32,32))
-mouse.set_visible(False)
-
 
 #images and sprites
 nums = [
@@ -27,7 +23,6 @@ nums = [
         image.load(f"assets/sprites/9.png").convert_alpha(),
         
         ]
-
 
 quit = pygame.transform.scale(pygame.image.load(r"assets/sprites/button0.png").convert_alpha(),(40,40))
 pause = pygame.transform.scale(pygame.image.load(r"assets/sprites/pause button.png").convert_alpha(),(40,40))
@@ -87,13 +82,13 @@ def game():
             score_list_index+=1
         if score_list_index<=9:
             screen.blit(nums[score_list_index],(20,20))
-        elif score_list_index > 9:
+        elif score_list_index > 9 and score_list_index <= 99:
             double_digits = str(score_list_index)
             screen.blit(nums[int(double_digits[0])],(20,20)) ; screen.blit(nums[int(double_digits[1])],(44,20))
         elif score_list_index > 99:
-            double_digits = str(score_list_index)
-            screen.blit(nums[int(double_digits[0])]),(20,20) ; screen.blit(nums[int(double_digits[1])],(44,20))
-            screen.blit(nums[int(double_digits[2])],(68,20))
+            triple_digits = str(score_list_index)
+            screen.blit(nums[int(triple_digits[0])],(20,20)) ; screen.blit(nums[int(triple_digits[1])],(44,20))
+            screen.blit(nums[int(triple_digits[2])],(68,20))
 
 
         player_mid = bird.get_width()//2 + 80
@@ -185,7 +180,6 @@ def game():
                 mixer.Sound.play(mixer.Sound(r"assets/sfx/wing.ogg"))
                 continue
             if cross.collidepoint(pos) and ev.type==MOUSEBUTTONDOWN:
-                print("pause")
                 run = False
                 return True
 
@@ -220,13 +214,12 @@ def game():
             if bird_rect_bottom.colliderect(obstacle) or bird_rect_top.colliderect(obstacle):
                 mixer.Sound.play(mixer.Sound(r"assets/sfx/hit.ogg"))
                 mixer.Sound.play(mixer.Sound(r"assets/sfx/die.ogg"))
-                print("collide")
+                pygame.time.delay(600)
                 dead = True
                 run = False
                 return
         
         screen.blit(pause,(220,20))
-        screen.blit(cursor,(pos[0]-8,pos[1]-8))
         clock.tick(fps)
         display.update()
 
@@ -269,12 +262,10 @@ def menu():
                 run = False
                 return True
             if cross.collidepoint(pos) and ev.type==MOUSEBUTTONDOWN:
-                print("quit")
                 run = False
                 return False
 
         screen.blit(quit,(20,20))
-        screen.blit(cursor,(pos[0]-8,pos[1]-8))
         clock.tick(fps)
         display.update()
 
@@ -284,7 +275,7 @@ def gameover():
     over = pygame.transform.scale(pygame.image.load(r"assets/sprites/over.png").convert_alpha(),(384,84))
     start = pygame.transform.scale(pygame.image.load(r"assets/sprites/button1.png").convert_alpha(),(96,96))
     exit = pygame.transform.scale(pygame.image.load(r"assets/sprites/exit.png").convert_alpha(),(96,96))
-
+    exit_y=300 ; start_y=300
     run = True
     while run:
         pos = mouse.get_pos()
@@ -297,11 +288,7 @@ def gameover():
 
         screen.blit(over,(55,150))
 
-        screen.blit(start,(100,300))
-
-        screen.blit(exit,(304,300))
-
-        screen.blit(cursor,(pos[0]-8,pos[1]-8))
+        
 
         x1-=0.5 ; x2 -= 0.5
         if x1 <=-500:
@@ -314,24 +301,40 @@ def gameover():
                 run = False
                 pygame.quit()
                 sys.exit()
+            if ev.type == KEYDOWN:
+                if ev.key == K_RETURN:
+                    start_y = 310
+                if ev.key == K_ESCAPE:
+                    exit_y = 310
             if ev.type == KEYUP:
                 if ev.key == K_RETURN:
-                    print("start")
+                    start_y = 300
                     run = False
                     return False
-                    
                 if ev.key == K_ESCAPE:
-                    print("exit")
+                    exit_y = 300
                     run = False
                     return True
             if exit_rect.collidepoint(pos) and ev.type == MOUSEBUTTONDOWN:
-                print("exit")
+                exit_y = 310
+               
+            if start_rect.collidepoint(pos) and ev.type == MOUSEBUTTONDOWN:
+                start_y = 310
+               
+            if start_rect.collidepoint(pos) and ev.type == MOUSEBUTTONUP:
+                start_y=300
+                run=False
+                return False
+            
+            if exit_rect.collidepoint(pos) and ev.type == MOUSEBUTTONUP:
+                exit_y = 300
                 run = False
                 return True
-            if start_rect.collidepoint(pos) and ev.type == MOUSEBUTTONDOWN:
-                print("start")
-                run = False
-                return False
+            
+            
+        screen.blit(start,(100,start_y))
+
+        screen.blit(exit,(304,exit_y))
 
         clock.tick(fps)
         display.update()
@@ -348,7 +351,6 @@ while True:
         else:
             pass
     if dead == True:
-        t.sleep(0.20)
         if not gameover():
             continue
         else:
