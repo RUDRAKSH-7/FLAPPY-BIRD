@@ -231,7 +231,7 @@ def menu():
     while run:
         pos = mouse.get_pos()
         screen.fill((78,192,202))
-        cross = pygame.draw.rect(screen,(255,3,72),(18,18,40,40))
+        cross = pygame.draw.rect(screen,(255,3,72),(500-20-38,18,40,40))
         screen.blit(bg,(x1,0))
         screen.blit(bg,(x2,0))
 
@@ -265,7 +265,7 @@ def menu():
                 run = False
                 return False
 
-        screen.blit(quit,(20,20))
+        screen.blit(quit,(500-20-40,20))
         clock.tick(fps)
         display.update()
 
