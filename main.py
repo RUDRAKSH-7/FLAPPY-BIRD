@@ -1,10 +1,10 @@
-import pygame ; import random ; from pygame.locals import * ; import sys
+import pygame ; import random ; from pygame.locals import * ; import sys ; import time as t
 pygame.init() 
 from pygame import *
 from pygame.mixer import music
 
 fps = 90 ; clock = pygame.time.Clock()
-screen = display.set_mode((500,480),pygame.NOFRAME )
+screen = display.set_mode((500,480),pygame.NOFRAME)
 display.set_caption("FLAPPY BIRD")
 display.set_icon(pygame.image.load(r"assets/ico.png"))
 
@@ -13,28 +13,32 @@ mouse.set_visible(False)
 
 
 #images and sprites
-nums = []
-for i in range(0,10):
-    nums.append(image.load(f"assets/sprites/{i}.png").convert_alpha())
+nums = [
+        
+        image.load(f"assets/sprites/0.png").convert_alpha(),
+        image.load(f"assets/sprites/1.png").convert_alpha(),
+        image.load(f"assets/sprites/2.png").convert_alpha(),
+        image.load(f"assets/sprites/3.png").convert_alpha(),
+        image.load(f"assets/sprites/4.png").convert_alpha(),
+        image.load(f"assets/sprites/5.png").convert_alpha(),
+        image.load(f"assets/sprites/6.png").convert_alpha(),
+        image.load(f"assets/sprites/7.png").convert_alpha(),
+        image.load(f"assets/sprites/8.png").convert_alpha(),
+        image.load(f"assets/sprites/9.png").convert_alpha(),
+        
+        ]
+
 
 quit = pygame.transform.scale(pygame.image.load(r"assets/sprites/button0.png").convert_alpha(),(40,40))
 pause = pygame.transform.scale(pygame.image.load(r"assets/sprites/pause button.png").convert_alpha(),(40,40))
-
-# bird = pygame.image.load(r"assets\sprites\bird.png").convert_alpha()
-
 bg = pygame.image.load(r"assets\sprites\bg.png").convert_alpha()
-
 title = pygame.transform.scale(pygame.image.load(r"assets\sprites\start.png").convert_alpha(),(368,534))
 ground = pygame.image.load(r"assets\sprites\base.png")
-
-
-
 pipe_up = pygame.transform.scale(pygame.image.load(r"assets/sprites/pipe.png").convert_alpha(),(96,786))
-
-# bird = pygame.transform.scale(pygame.image.load(r"assets/sprites/bird.png").convert_alpha(),(34*1.5,24*1.5))
 
 #sounds
 swoosh = mixer.Sound(r"assets/sfx/swoosh.wav")
+#more sounds are loaded at the time of playing
 
 #animating the bird flap
 duration = 5
@@ -51,7 +55,7 @@ def game():
     global pipe_y1,pipe_y2,pipe_y3
     global pipe_x1,pipe_x2,pipe_x3
     global x1,x2,x3,x4,x5,pipe_x1
-    global dead
+    global dead ,score_list_index
     dead = False
 
     bird_y = 80
@@ -62,12 +66,38 @@ def game():
     pipe_x2 = pipe_x1 + 96 + 150 ; pipe_y2 = random.randint(-250,-60)
     pipe_x3 = pipe_x2 + 96 + 150 ; pipe_y3 = random.randint(-250,-60)
 
+    score_list_index = 0
     def animate():
     
         global bird, counter, index, duration,sprites, velocity,bird_y
+        global player_mid, score_list_index, score_timer, score_duration
+        
 
         bird = sprites[index]
         screen.blit(bird,(80,bird_y))
+        if pipe_x1+30 <= 80+(34*1.5) < pipe_x1 + 31:
+            mixer.Sound.play(mixer.Sound(r"assets/sfx/point.ogg"))
+            score_list_index+=1
+        
+        if pipe_x2+30 <= 80+(34*1.5) < pipe_x2 + 31:
+            mixer.Sound.play(mixer.Sound(r"assets/sfx/point.ogg"))
+            score_list_index+=1
+        if pipe_x3+30 <= 80+(34*1.5) < pipe_x3 + 31:
+            mixer.Sound.play(mixer.Sound(r"assets/sfx/point.ogg"))
+            score_list_index+=1
+        if score_list_index<=9:
+            screen.blit(nums[score_list_index],(20,20))
+        elif score_list_index > 9:
+            double_digits = str(score_list_index)
+            screen.blit(nums[int(double_digits[0])],(20,20)) ; screen.blit(nums[int(double_digits[1])],(44,20))
+        elif score_list_index > 99:
+            double_digits = str(score_list_index).split()
+            screen.blit(nums[int(double_digits[0])]),(20,20) ; screen.blit(nums[int(double_digits[1])],(44,20))
+            screen.blit(nums[int(double_digits[2])],(68,20))
+
+
+        player_mid = bird.get_width()//2 + 80
+
         if dead == True:
             return
         velocity += 0.10
@@ -83,9 +113,7 @@ def game():
             counter = 0
             index += 1
             if index >= len(sprites):
-                index = 0
-        
-       
+                index = 0  
 
     def scroll():
         if dead == True:
@@ -120,11 +148,13 @@ def game():
         if pipe_x3 <= -96:
             pipe_x3 = 500 + 150
             pipe_y3 = random.randrange(-250,-60,50)
+
     
 
     run = True
-
+    
     while run:
+        global bird,scored
         screen.fill((78,192,202))
 
         pos = mouse.get_pos()
@@ -172,14 +202,13 @@ def game():
         pygame.draw.rect(screen,(255,0,0),(pipe_x3,pipe_y3+335-52,96,50)),
         pygame.draw.rect(screen,(255,0,0),(pipe_x3,pipe_y3+345+76,96,52))]
 
-
         screen.blit(bg,(x1,0))
         screen.blit(bg,(x2,0))
 
         screen.blit(pipe_up,(pipe_x1,pipe_y1))
         screen.blit(pipe_up,(pipe_x2,pipe_y2))
         screen.blit(pipe_up,(pipe_x3,pipe_y3))
-
+        
         screen.blit(ground,(x4,430))
         screen.blit(ground,(x5,430))
     
@@ -189,15 +218,15 @@ def game():
 
         for obstacle in all_possible_collision:
             if bird_rect_bottom.colliderect(obstacle) or bird_rect_top.colliderect(obstacle):
+                mixer.Sound.play(mixer.Sound(r"assets/sfx/hit.ogg"))
+                mixer.Sound.play(mixer.Sound(r"assets/sfx/die.ogg"))
                 print("collide")
                 dead = True
                 run = False
-                return 
-
+                return
         
         screen.blit(pause,(220,20))
-        screen.blit(cursor,pos)
-    
+        screen.blit(cursor,(pos[0]-8,pos[1]-8))
         clock.tick(fps)
         display.update()
 
@@ -245,7 +274,7 @@ def menu():
                 return False
 
         screen.blit(quit,(20,20))
-        screen.blit(cursor,pos)
+        screen.blit(cursor,(pos[0]-8,pos[1]-8))
         clock.tick(fps)
         display.update()
 
@@ -272,7 +301,7 @@ def gameover():
 
         screen.blit(exit,(304,300))
 
-        screen.blit(cursor,pos)
+        screen.blit(cursor,(pos[0]-8,pos[1]-8))
 
         x1-=0.5 ; x2 -= 0.5
         if x1 <=-500:
@@ -319,6 +348,7 @@ while True:
         else:
             pass
     if dead == True:
+        t.sleep(0.20)
         if not gameover():
             continue
         else:
