@@ -1,38 +1,49 @@
-import pygame ; import random ; from pygame.locals import * ; import sys ; import time as t
+import pygame ; import random ; import sys
 pygame.init() 
 from pygame import *
-from pygame.mixer import music
+import os
+
+def r(relative_path):
+    """ Get the correct path for bundled files. """
+    if hasattr(sys, '_MEIPASS'):
+        return os.path.join(sys._MEIPASS, relative_path)
+    return os.path.join(os.path.abspath("."), relative_path)
 
 fps = 95 ; clock = pygame.time.Clock()
 screen = display.set_mode((500,480),pygame.NOFRAME)
 display.set_caption("FLAPPY BIRD")
-display.set_icon(pygame.image.load(r"assets/ico.png"))
+display.set_icon(pygame.image.load(r("assets/ico.png")))
 
 #images and sprites
 nums = [
         
-        image.load(f"assets/sprites/0.png").convert_alpha(),
-        image.load(f"assets/sprites/1.png").convert_alpha(),
-        image.load(f"assets/sprites/2.png").convert_alpha(),
-        image.load(f"assets/sprites/3.png").convert_alpha(),
-        image.load(f"assets/sprites/4.png").convert_alpha(),
-        image.load(f"assets/sprites/5.png").convert_alpha(),
-        image.load(f"assets/sprites/6.png").convert_alpha(),
-        image.load(f"assets/sprites/7.png").convert_alpha(),
-        image.load(f"assets/sprites/8.png").convert_alpha(),
-        image.load(f"assets/sprites/9.png").convert_alpha(),
+        image.load(r("assets/sprites/0.png")).convert_alpha(),
+        image.load(r("assets/sprites/1.png")).convert_alpha(),
+        image.load(r("assets/sprites/2.png")).convert_alpha(),
+        image.load(r("assets/sprites/3.png")).convert_alpha(),
+        image.load(r("assets/sprites/4.png")).convert_alpha(),
+        image.load(r("assets/sprites/5.png")).convert_alpha(),
+        image.load(r("assets/sprites/6.png")).convert_alpha(),
+        image.load(r("assets/sprites/7.png")).convert_alpha(),
+        image.load(r("assets/sprites/8.png")).convert_alpha(),
+        image.load(r("assets/sprites/9.png")).convert_alpha(),
         
         ]
 
-quit = pygame.transform.scale(pygame.image.load(r"assets/sprites/button0.png").convert_alpha(),(40,40))
-pause = pygame.transform.scale(pygame.image.load(r"assets/sprites/pause button.png").convert_alpha(),(40,40))
-bg = pygame.image.load(r"assets\sprites\bg.png").convert_alpha()
-title = pygame.transform.scale(pygame.image.load(r"assets\sprites\start.png").convert_alpha(),(368,534))
-ground = pygame.image.load(r"assets\sprites\base.png")
-pipe_up = pygame.transform.scale(pygame.image.load(r"assets/sprites/pipe.png").convert_alpha(),(96,786))
+quit = pygame.transform.scale(pygame.image.load(r("assets/sprites/button0.png")).convert_alpha(),(40,40))
+pause = pygame.transform.scale(pygame.image.load(r("assets/sprites/pause button.png")).convert_alpha(),(40,40))
+bg = pygame.image.load(r("assets/sprites/bg.png")).convert_alpha()
+title = pygame.transform.scale(pygame.image.load(r("assets/sprites/start.png")).convert_alpha(),(368,534))
+ground = pygame.image.load(r("assets/sprites/base.png"))
+pipe_up = pygame.transform.scale(pygame.image.load(r("assets/sprites/pipe.png")).convert_alpha(),(96,786))
+
+over = pygame.transform.scale(pygame.image.load(r("assets/sprites/over.png")).convert_alpha(),(384,84))
+start = pygame.transform.scale(pygame.image.load(r("assets/sprites/button1.png")).convert_alpha(),(96,96))
+exit = pygame.transform.scale(pygame.image.load(r("assets/sprites/exit.png")).convert_alpha(),(96,96))
+button = transform.scale(image.load(r("assets/sprites/begin.png")),(96,96))
 
 #sounds
-swoosh = mixer.Sound(r"assets/sfx/swoosh.wav")
+swoosh = mixer.Sound(r("assets/sfx/swoosh.wav"))
 #more sounds are loaded at the time of playing
 
 #animating the bird flap
@@ -40,9 +51,9 @@ duration = 5
 index = 0
 counter = 0
 velocity = 0
-sprites = [pygame.transform.scale(pygame.image.load(r"assets/sprites/bird1.png").convert_alpha(),(34*1.5,24*1.5)),
-pygame.transform.scale(pygame.image.load(r"assets/sprites/bird2.png").convert_alpha(),(34*1.5,24*1.5)),
-pygame.transform.scale(pygame.image.load(r"assets/sprites/bird3.png").convert_alpha(),(34*1.5,24*1.5))]
+sprites = [pygame.transform.scale(pygame.image.load(r("assets/sprites/bird1.png")).convert_alpha(),(34*1.5,24*1.5)),
+pygame.transform.scale(pygame.image.load(r("assets/sprites/bird2.png")).convert_alpha(),(34*1.5,24*1.5)),
+pygame.transform.scale(pygame.image.load(r("assets/sprites/bird3.png")).convert_alpha(),(34*1.5,24*1.5))]
     
 
 def game():
@@ -70,16 +81,18 @@ def game():
 
         bird = sprites[index]
         screen.blit(bird,(80,bird_y))
-        if pipe_x1+30 <= 80+(34*1.5) < pipe_x1 + 31:
-            mixer.Sound.play(mixer.Sound(r"assets/sfx/point.ogg"))
+        if pipe_x1+50 <= 90+(34*1.5-12) < pipe_x1 + 52:
+            mixer.Sound.play(mixer.Sound(r("assets/sfx/point.ogg")))
             score_list_index+=1
         
-        if pipe_x2+30 <= 80+(34*1.5) < pipe_x2 + 31:
-            mixer.Sound.play(mixer.Sound(r"assets/sfx/point.ogg"))
+        if pipe_x2+50 <= 90+(34*1.5-12) < pipe_x2 + 52:
+            mixer.Sound.play(mixer.Sound(r("assets/sfx/point.ogg")))
             score_list_index+=1
-        if pipe_x3+30 <= 80+(34*1.5) < pipe_x3 + 31:
-            mixer.Sound.play(mixer.Sound(r"assets/sfx/point.ogg"))
+
+        if pipe_x3+50 <= 90+(34*1.5-12) < pipe_x3 + 52:
+            mixer.Sound.play(mixer.Sound(r("assets/sfx/point.ogg")))
             score_list_index+=1
+
         if score_list_index<=9:
             screen.blit(nums[score_list_index],(20,20))
         elif score_list_index > 9 and score_list_index <= 99:
@@ -169,7 +182,7 @@ def game():
                     else:
                         velocity = -2.5
                         bird_y+=velocity
-                    mixer.Sound.play(mixer.Sound(r"assets/sfx/wing.ogg"))
+                    mixer.Sound.play(mixer.Sound(r("assets/sfx/wing.ogg")))
                     continue
             if mouse.get_pressed()[0] == True and dead!= True and not cross.collidepoint(pos):
                 if bird_y-20 <=0:
@@ -177,7 +190,7 @@ def game():
                 else:
                     velocity = -2.5
                     bird_y += velocity
-                mixer.Sound.play(mixer.Sound(r"assets/sfx/wing.ogg"))
+                mixer.Sound.play(mixer.Sound(r("assets/sfx/wing.ogg")))
                 continue
             if cross.collidepoint(pos) and ev.type==MOUSEBUTTONDOWN:
                 run = False
@@ -212,8 +225,8 @@ def game():
 
         for obstacle in all_possible_collision:
             if bird_rect_bottom.colliderect(obstacle) or bird_rect_top.colliderect(obstacle):
-                mixer.Sound.play(mixer.Sound(r"assets/sfx/hit.ogg"))
-                mixer.Sound.play(mixer.Sound(r"assets/sfx/die.ogg"))
+                mixer.Sound.play(mixer.Sound(r("assets/sfx/hit.ogg")))
+                mixer.Sound.play(mixer.Sound(r("assets/sfx/die.ogg")))
                 pygame.time.delay(600)
                 dead = True
                 run = False
@@ -228,10 +241,12 @@ def menu():
     run = True
     x1 = 0 ; x2 = 500
     x4 = 0 ; x5 = 500
+    begin_y = 300
     while run:
         pos = mouse.get_pos()
         screen.fill((78,192,202))
         cross = pygame.draw.rect(screen,(255,3,72),(500-20-38,18,40,40))
+        start_rect = draw.rect(screen,(255,0,0),(205,begin_y+10,96,70))
         screen.blit(bg,(x1,0))
         screen.blit(bg,(x2,0))
 
@@ -254,17 +269,25 @@ def menu():
                     pygame.quit() ; sys.exit()
                     return False
                 if ev.key == K_RETURN or ev.key == K_SPACE:
+                    begin_y = 305
+            if ev.type == KEYUP:
+                if ev.key == K_RETURN or ev.key == K_SPACE:
+                    begin_y = 300
                     mixer.Sound.play(swoosh)
+                    run = False
                     return True
-                    if menu():  run = False
-            if mouse.get_pressed()[0] == True and not cross.collidepoint(pos):
-                mixer.Sound.play(swoosh)
-                run = False
-                return True
             if cross.collidepoint(pos) and ev.type==MOUSEBUTTONDOWN:
                 run = False
                 return False
-
+            if start_rect.collidepoint(pos) and ev.type == MOUSEBUTTONDOWN:
+                begin_y = 305
+            if start_rect.collidepoint(pos) and ev.type == MOUSEBUTTONUP:
+                mixer.Sound.play(swoosh)
+                begin_y = 300
+                run = False
+                return True
+        
+        screen.blit(button,(205,begin_y))
         screen.blit(quit,(500-20-40,20))
         clock.tick(fps)
         display.update()
@@ -272,9 +295,7 @@ def menu():
 def gameover():
     global x1,x2,x3,x4,x5,start
 
-    over = pygame.transform.scale(pygame.image.load(r"assets/sprites/over.png").convert_alpha(),(384,84))
-    start = pygame.transform.scale(pygame.image.load(r"assets/sprites/button1.png").convert_alpha(),(96,96))
-    exit = pygame.transform.scale(pygame.image.load(r"assets/sprites/exit.png").convert_alpha(),(96,96))
+    
     exit_y=300 ; start_y=300
     run = True
     while run:
@@ -288,7 +309,6 @@ def gameover():
 
         screen.blit(over,(55,150))
 
-        
 
         x1-=0.5 ; x2 -= 0.5
         if x1 <=-500:
@@ -316,10 +336,10 @@ def gameover():
                     run = False
                     return True
             if exit_rect.collidepoint(pos) and ev.type == MOUSEBUTTONDOWN:
-                exit_y = 310
+                exit_y = 305
                
             if start_rect.collidepoint(pos) and ev.type == MOUSEBUTTONDOWN:
-                start_y = 310
+                start_y = 305
                
             if start_rect.collidepoint(pos) and ev.type == MOUSEBUTTONUP:
                 start_y=300
@@ -342,14 +362,13 @@ def gameover():
 if not menu():
     pygame.quit() ; sys.exit()
 
-
 while True:
     if game():
-        mixer.Sound.play(mixer.Sound(r"assets/sfx/pause.mp3"))
+        mixer.Sound.play(mixer.Sound(r("assets/sfx/pause.mp3")))
         if not menu():
-            pygame.quit; sys.exit()
+            pygame.quit() ; sys.exit()
         else:
-            pass
+            continue
     if dead == True:
         if not gameover():
             continue
