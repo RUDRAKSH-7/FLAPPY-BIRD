@@ -8,4 +8,4 @@ A better version of flappy bird made in Pygame
 2. Unzip it into a folder.
 3. Open terminal / command prompt inside the game folder and run command :
 
-   ''' : python game.py
+   '''python game.py
