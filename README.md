@@ -3,10 +3,7 @@ A better version of flappy bird made in Pygame
 
 
 
-### FLAPPY BIRD FEATURES ###
-This game has a better USER INTERFACE. Very Precise Hitboxes and collision detection!
-
-## IN DEVELOPMENT :
-1. More sounds and Background music may be added.
-2. Better Buttons and click sounds.
-3. Highscore system and DATA-SAVE.
+### HOW TO PLAY :
+1. Download the 'main.py' file from the top.
+2. Download the 'assets.rar' and unzip it, you will find a folder 'assets'.
+3. place both the main.py and assets folder in the same parent folder and run the py file using terminal. 
