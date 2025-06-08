@@ -10,4 +10,5 @@ A better version of flappy bird made in Pygame
 
    > python game.py
 ## NOTE :
-keep the BOTH the - assets and file in the folder!
+- keep the BOTH the assets and file in the folder!
+- To check the source code access the game.py here itself!
