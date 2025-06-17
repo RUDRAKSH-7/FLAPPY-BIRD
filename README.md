@@ -8,7 +8,7 @@ A better version of flappy bird made in Pygame
 2. Unzip it somewhere you like.
 3. Open terminal / command prompt inside the game folder and run command :
 
-   > python game.pyW
+   > python game.pyw
 4. Easier way is to double click the game.pyw file and open with python launcher instead of terminal.
 # What does this project mean?
 Its a very basic, not so basic pygame project which features multiple ascepts of coding, especially with the new feature of BEST SCORE, it uses binary file manipulation and file handling algorithms, which is the best way to practically implement the score functionality in the game.
